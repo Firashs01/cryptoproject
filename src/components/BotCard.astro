@@ -1,0 +1,27 @@
+---
+interface Props {
+  title: string;
+  url: string;
+  description: string;
+  image: string;
+}
+
+const { title, url, description, image } = Astro.props;
+const search = `${title} ${description}`.toLowerCase();
+---
+
+<li class="card-item" data-searchable data-search={search}>
+  <article class="card">
+    <div class="card-media">
+      <img src={image} alt={`${title} preview`} width="640" height="360" loading="lazy" decoding="async" />
+    </div>
+    <div class="card-body">
+      <h3>{title}</h3>
+      <p>{description}</p>
+      <a class="btn btn-primary" href={url} target="_blank" rel="noopener noreferrer">
+        Open in Telegram
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </article>
+</li>

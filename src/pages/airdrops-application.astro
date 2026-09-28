@@ -1,0 +1,52 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AirdropCard from '../components/AirdropCard.astro';
+import SearchBar from '../components/SearchBar.astro';
+import airdrops from '../data/airdrops.json';
+
+const title = 'Airdrops Application | Apply for Web3 Airdrops';
+const description =
+  'Browse and apply for Web3 airdrop opportunities. Find active token giveaways, testnet campaigns and community rewards from promising crypto projects.';
+---
+
+<Layout title={title} description={description}>
+  <section class="hero">
+    <div class="container">
+      <span class="hero-kicker">Airdrop Application</span>
+      <h1>Airdrops <em>Application</em></h1>
+      <p>
+        Stay ahead of token drops. Our airdrop application directory lists active and upcoming
+        Web3 distributions so you can discover participation opportunities before they end.
+      </p>
+      <a class="btn btn-primary" href="#airdrops">Explore applications</a>
+    </div>
+  </section>
+
+  <section class="section" id="airdrops" aria-labelledby="airdrops-heading">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2 id="airdrops-heading">Airdrop Applications</h2>
+          <p>{airdrops.length} airdrop opportunities currently listed.</p>
+        </div>
+        <SearchBar
+          label="Search airdrops"
+          placeholder="Search airdrops by name or description…"
+        />
+      </div>
+
+      <ul class="card-grid">
+        {
+          airdrops.map((airdrop) => (
+            <AirdropCard
+              title={airdrop.title}
+              url={airdrop.url}
+              description={airdrop.description}
+              image={airdrop.image}
+            />
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</Layout>

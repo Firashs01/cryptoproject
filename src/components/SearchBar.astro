@@ -1,0 +1,51 @@
+---
+interface Props {
+  label?: string;
+  placeholder?: string;
+}
+
+const {
+  label = 'Search',
+  placeholder = 'Search by title or description…',
+} = Astro.props;
+---
+
+<div class="search-bar">
+  <label for="site-search">{label}</label>
+  <span class="search-icon" aria-hidden="true">⌕</span>
+  <input
+    id="site-search"
+    type="search"
+    name="q"
+    placeholder={placeholder}
+    autocomplete="off"
+    data-search-input
+  />
+</div>
+<p class="search-status" data-search-status aria-live="polite"></p>
+
+<script>
+  const input = document.querySelector<HTMLInputElement>('[data-search-input]');
+  const status = document.querySelector<HTMLElement>('[data-search-status]');
+  const items = Array.from(document.querySelectorAll<HTMLElement>('[data-searchable]'));
+
+  function applyFilter() {
+    const query = (input?.value || '').trim().toLowerCase();
+    let visible = 0;
+
+    for (const item of items) {
+      const haystack = item.dataset.search || '';
+      const match = query === '' || haystack.includes(query);
+      item.hidden = !match;
+      if (match) visible += 1;
+    }
+
+    if (status) {
+      status.textContent = query
+        ? `${visible} result${visible === 1 ? '' : 's'} for “${query}”`
+        : '';
+    }
+  }
+
+  input?.addEventListener('input', applyFilter);
+</script>

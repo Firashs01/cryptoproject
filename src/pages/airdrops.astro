@@ -1,0 +1,85 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const title = 'Airdrops | Coming Soon | CryptoWords*';
+const description =
+  'Our Web3 airdrops page is on the way. Check back soon for curated token drops, testnet campaigns and community rewards.';
+---
+
+<Layout title={title} description={description}>
+  <section class="hero">
+    <div class="container">
+      <span class="hero-kicker">Airdrops</span>
+      <h1>Airdrops <em>Coming Soon</em></h1>
+      <p>
+        We are curating the best Web3 airdrop opportunities for you. This page is under
+        construction — stay tuned for the launch.
+      </p>
+      <a class="btn btn-primary" href="/airdrops-application">View airdrop applications</a>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="coming-soon-heading">
+    <div class="container">
+      <div class="coming-soon">
+        <span class="coming-soon-badge">Coming Soon</span>
+        <h2 id="coming-soon-heading">Something big is landing here</h2>
+        <p>
+          Active and upcoming airdrops, testnet campaigns and community rewards will be listed
+          on this page very soon.
+        </p>
+        <a class="btn btn-primary" href="/contact">Get notified</a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .coming-soon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+    padding: 4rem 1.5rem;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .coming-soon h2 {
+    margin: 0;
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+  }
+
+  .coming-soon p {
+    max-width: 40rem;
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .coming-soon-badge {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #05060a;
+    background: var(--accent);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.7;
+      transform: scale(1.04);
+    }
+  }
+</style>

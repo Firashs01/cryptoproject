@@ -1,0 +1,49 @@
+---
+import Layout from '../layouts/Layout.astro';
+import BotCard from '../components/BotCard.astro';
+import SearchBar from '../components/SearchBar.astro';
+import bots from '../data/bots.json';
+
+const title = 'Web3 Telegram Bots | Discover Crypto & Blockchain Bots';
+const description =
+  'Browse a curated directory of Web3 Telegram bots. Discover crypto rewards, DeFi tools, airdrop helpers and blockchain opportunities in one place.';
+---
+
+<Layout title={title} description={description}>
+  <section class="hero">
+    <div class="container">
+      <span class="hero-kicker">Web3 Telegram Directory</span>
+      <h1>Discover <em>Web3 Telegram Bots</em></h1>
+      <p>
+        A curated directory of Telegram bots and Web3 opportunities — from reward claimers and
+        wallet assistants to airdrop finders and DeFi signal tools. Find your next bot in seconds.
+      </p>
+      <a class="btn btn-primary" href="#bots">Browse all bots</a>
+    </div>
+  </section>
+
+  <section class="section" id="bots" aria-labelledby="bots-heading">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2 id="bots-heading">Telegram Bots</h2>
+          <p>{bots.length} hand-picked Web3 bots ready to explore.</p>
+        </div>
+        <SearchBar label="Search bots" placeholder="Search bots by name or description…" />
+      </div>
+
+      <ul class="card-grid">
+        {
+          bots.map((bot) => (
+            <BotCard
+              title={bot.title}
+              url={bot.url}
+              description={bot.description}
+              image={bot.image}
+            />
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</Layout>
