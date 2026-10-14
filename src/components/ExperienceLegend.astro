@@ -1,0 +1,23 @@
+---
+const items = [
+  { key: 'safe', label: 'Safe', hint: 'Vetted and reliable' },
+  { key: 'inexperienced', label: 'Inexperienced', hint: 'New or unproven' },
+  { key: 'scam', label: 'Scam', hint: 'Flagged — avoid' },
+  { key: 'unknown', label: 'Unrated', hint: 'No rating yet' }
+];
+---
+
+<ul class="experience-legend" aria-label="Project experience rating legend">
+  {
+    items.map((item) => (
+      <li class="experience-legend__item">
+        <span
+          class={`experience-legend__swatch experience-legend__swatch--${item.key}`}
+          aria-hidden="true"
+        />
+        <span class="experience-legend__label">{item.label}</span>
+        <span class="experience-legend__hint">{item.hint}</span>
+      </li>
+    ))
+  }
+</ul>

@@ -1,0 +1,62 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AirdropCard from '../components/AirdropCard.astro';
+import SearchBar from '../components/SearchBar.astro';
+import ExperienceLegend from '../components/ExperienceLegend.astro';
+import ExperienceFilter from '../components/ExperienceFilter.astro';
+import airdropSite from '../data/airdropsite.json';
+
+const title = 'Airdrop Site | Curated Web3 Airdrops | CryptoWords*';
+const description =
+  'Browse curated Web3 airdrop opportunities from airdropsite.json. Search and filter each project by experience level before you join.';
+
+const airdrops = [...airdropSite].sort(
+  (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+);
+---
+
+<Layout title={title} description={description}>
+  <section class="hero">
+    <div class="container">
+      <span class="hero-kicker">Airdrop Site</span>
+      <h1>Airdrop <em>Site</em></h1>
+      <p>
+        Every listing on this page is loaded from airdropsite.json. Search by name or
+        description and filter by experience level to find the right opportunity.
+      </p>
+      <a class="btn btn-primary" href="#airdrop-site-list">Explore airdrops</a>
+    </div>
+  </section>
+
+  <section class="section" id="airdrop-site-list" aria-labelledby="airdrop-site-heading">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2 id="airdrop-site-heading">Airdrop Site Listings</h2>
+          <p>{airdrops.length} airdrop{airdrops.length === 1 ? '' : 's'} currently listed.</p>
+        </div>
+        <SearchBar
+          label="Search airdrops"
+          placeholder="Search airdrops by name or description…"
+        />
+      </div>
+
+      <ExperienceLegend />
+      <ExperienceFilter />
+
+      <ul class="card-grid">
+        {
+          airdrops.map((airdrop) => (
+            <AirdropCard
+              title={airdrop.title}
+              url={airdrop.url}
+              description={airdrop.description}
+              image={airdrop.image}
+              experience={airdrop.experience}
+            />
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</Layout>

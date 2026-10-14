@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Project card entry",
+  "description": "Shape shared by every object in src/data/bots.json and src/data/airdrops.json.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["title", "url", "description", "image", "experience"],
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Display name of the project."
+    },
+    "url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Destination link shown on the card."
+    },
+    "description": {
+      "type": "string",
+      "description": "Short summary of the project."
+    },
+    "image": {
+      "type": "string",
+      "description": "Path to the card artwork."
+    },
+    "experience": {
+      "type": "string",
+      "description": "Trust level of the project. Drives the card border color: safe = green (#22c55e), inexperienced = yellow (#eab308), scam = red (#ef4444). Required. Missing or invalid values fall back to a neutral gray border and log a build warning.",
+      "enum": ["safe", "inexperienced", "scam"]
+    }
+  },
+  "example": [
+    {
+      "title": "Example Safe Bot",
+      "url": "https://t.me/example_bot",
+      "description": "A short description of the project.",
+      "image": "../images/bots/example.png",
+      "experience": "safe"
+    },
+    {
+      "title": "Example Unproven Bot",
+      "url": "https://t.me/example2_bot",
+      "description": "A short description of the project.",
+      "image": "../images/bots/example2.png",
+      "experience": "inexperienced"
+    },
+    {
+      "title": "Example Flagged Bot",
+      "url": "https://t.me/example3_bot",
+      "description": "A short description of the project.",
+      "image": "../images/bots/example3.png",
+      "experience": "scam"
+    }
+  ]
+}

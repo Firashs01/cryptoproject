@@ -2,6 +2,8 @@
 import Layout from '../layouts/Layout.astro';
 import BotCard from '../components/BotCard.astro';
 import SearchBar from '../components/SearchBar.astro';
+import ExperienceLegend from '../components/ExperienceLegend.astro';
+import ExperienceFilter from '../components/ExperienceFilter.astro';
 import bots from '../data/bots.json';
 
 const title = 'Web3 Telegram Bots | Discover Crypto & Blockchain Bots';
@@ -32,6 +34,9 @@ const description =
         <SearchBar label="Search bots" placeholder="Search bots by name or description…" />
       </div>
 
+      <ExperienceLegend />
+      <ExperienceFilter />
+
       <ul class="card-grid">
         {
           bots.map((bot) => (
@@ -40,6 +45,7 @@ const description =
               url={bot.url}
               description={bot.description}
               image={bot.image}
+              experience={bot.experience}
             />
           ))
         }

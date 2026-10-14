@@ -1,0 +1,367 @@
+---
+const STORAGE_KEY = 'experience-filters';
+const DEFAULT_FILTERS = { safe: true, inexperienced: true, scam: true };
+
+const FILTERS = [
+  { key: 'safe', label: 'Safe', color: 'green', emoji: '🟢' },
+  { key: 'inexperienced', label: 'Inexperienced', color: 'yellow', emoji: '🟡' },
+  { key: 'scam', label: 'Scam', color: 'red', emoji: '🔴' },
+];
+---
+
+<div class="experience-filter" data-experience-filter>
+  <div class="experience-filter__controls">
+    <fieldset class="experience-filter__group">
+      <legend class="experience-filter__legend">Filter by experience</legend>
+      <div class="experience-filter__pills">
+        {
+          FILTERS.map((f) => (
+            <label class={`experience-filter__pill experience-filter__pill--${f.color}`} data-filter-key={f.key}>
+              <input
+                type="checkbox"
+                class="experience-filter__input"
+                value={f.key}
+                checked
+                aria-label={f.label}
+              />
+              <span class="experience-filter__emoji" aria-hidden="true">{f.emoji}</span>
+              <span class="experience-filter__label">{f.label}</span>
+            </label>
+          ))
+        }
+      </div>
+    </fieldset>
+    <button
+      type="button"
+      class="experience-filter__reset"
+      data-filter-reset
+      aria-label="Reset all filters"
+    >
+      Select All
+    </button>
+  </div>
+
+  <div class="experience-filter__status" data-filter-status aria-live="polite"></div>
+
+  <div class="experience-filter__empty" data-filter-empty hidden>
+    No projects match your filters.
+  </div>
+</div>
+
+<script>
+  (() => {
+    const DEFAULT_FILTERS = { safe: true, inexperienced: true, scam: true };
+
+    function getSearchQuery() {
+      const input = document.querySelector('[data-search-input]');
+      return (input?.value || '').trim().toLowerCase();
+    }
+
+    function applyFilters() {
+      const filterContainers = document.querySelectorAll('[data-experience-filter]');
+      const searchQuery = getSearchQuery();
+      filterContainers.forEach(container => {
+        const pills = container.querySelectorAll('.experience-filter__pill');
+        const statusEl = container.querySelector('[data-filter-status]');
+        const emptyEl = container.querySelector('[data-filter-empty]');
+        const grid = document.querySelector('.card-grid');
+        if (!grid) return;
+
+        const items = Array.from(grid.querySelectorAll('.card-item[data-experience]'));
+        const activeFilters = {};
+        pills.forEach(pill => {
+          const input = pill.querySelector('input');
+          const key = pill.dataset.filterKey;
+          activeFilters[key] = input.checked;
+          pill.classList.toggle('is-active', input.checked);
+        });
+
+        let visibleCount = 0;
+        items.forEach(item => {
+          const exp = item.dataset.experience;
+          const expMatch = activeFilters[exp] === true;
+          const searchMatch = searchQuery === '' || (item.dataset.search || '').includes(searchQuery);
+          const match = expMatch && searchMatch;
+
+          if (match) {
+            if (item.hidden) {
+              item.hidden = false;
+              item.offsetHeight;
+              item.classList.remove('is-hiding');
+            }
+            visibleCount++;
+          } else {
+            if (!item.hidden) {
+              item.classList.add('is-hiding');
+              setTimeout(() => {
+                if (item.classList.contains('is-hiding')) {
+                  item.hidden = true;
+                  item.classList.remove('is-hiding');
+                }
+              }, 200);
+            }
+          }
+        });
+
+        const totalCount = items.length;
+        if (statusEl) {
+          statusEl.textContent = `Showing ${visibleCount} of ${totalCount} project${totalCount === 1 ? '' : 's'}`;
+        }
+        if (emptyEl) {
+          emptyEl.hidden = visibleCount > 0;
+        }
+
+        // Notify search bar to re-apply
+        document.dispatchEvent(new CustomEvent('experience-filter-changed'));
+      });
+    }
+
+    function initFilter(container) {
+      const pills = container.querySelectorAll('.experience-filter__pill');
+      pills.forEach(pill => {
+        const input = pill.querySelector('input');
+        const key = pill.dataset.filterKey;
+        input.checked = DEFAULT_FILTERS[key] ?? true;
+        pill.classList.toggle('is-active', input.checked);
+      });
+      applyFilters();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const containers = document.querySelectorAll('[data-experience-filter]');
+      containers.forEach(initFilter);
+
+      containers.forEach(container => {
+        container.addEventListener('change', (e) => {
+          if (e.target.matches('.experience-filter__input')) {
+            applyFilters();
+          }
+        });
+
+        const resetBtn = container.querySelector('[data-filter-reset]');
+        if (resetBtn) {
+          resetBtn.addEventListener('click', () => {
+            const pills = container.querySelectorAll('.experience-filter__pill');
+            pills.forEach(pill => {
+              const input = pill.querySelector('input');
+              input.checked = true;
+              pill.classList.add('is-active');
+            });
+            applyFilters();
+          });
+        }
+      });
+
+      // Listen for search changes
+      document.addEventListener('search-filter-changed', applyFilters);
+    });
+  })();
+</script>
+
+<style>
+  .experience-filter {
+    margin-bottom: 1.5rem;
+  }
+
+  .experience-filter__controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .experience-filter__group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 0;
+    border: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .experience-filter__legend {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .experience-filter__pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    flex: 1;
+  }
+
+  .experience-filter__pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.85rem;
+    border: 2px solid var(--border);
+    border-radius: 999px;
+    background: var(--bg-soft);
+    color: var(--text);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease, opacity 0.15s ease;
+    white-space: nowrap;
+  }
+
+  .experience-filter__pill:hover {
+    border-color: var(--accent);
+  }
+
+  .experience-filter__pill:focus-within {
+    outline: 2px solid var(--accent-2);
+    outline-offset: 2px;
+  }
+
+  .experience-filter__pill.is-active {
+    opacity: 1;
+  }
+
+  .experience-filter__pill:not(.is-active) {
+    opacity: 0.45;
+    border-color: var(--border);
+  }
+
+  .experience-filter__pill--green.is-active {
+    border-color: var(--exp-safe);
+    background: rgba(34, 197, 94, 0.12);
+  }
+
+  .experience-filter__pill--yellow.is-active {
+    border-color: var(--exp-inexperienced);
+    background: rgba(234, 179, 8, 0.12);
+  }
+
+  .experience-filter__pill--red.is-active {
+    border-color: var(--exp-scam);
+    background: rgba(239, 68, 68, 0.12);
+  }
+
+  .experience-filter__input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .experience-filter__emoji {
+    font-size: 0.9em;
+    line-height: 1;
+  }
+
+  .experience-filter__reset {
+    padding: 0.45rem 0.85rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--bg-soft);
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+    white-space: nowrap;
+  }
+
+  .experience-filter__reset:hover {
+    border-color: var(--accent);
+    color: var(--text);
+    background: var(--surface);
+  }
+
+  .experience-filter__reset:focus-visible {
+    outline: 2px solid var(--accent-2);
+    outline-offset: 2px;
+  }
+
+  .experience-filter__status {
+    margin-top: 0.6rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .experience-filter__empty {
+    margin-top: 1.5rem;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    font-size: 0.95rem;
+  }
+
+  /* Card fade animations */
+  .card-item {
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+  }
+
+  .card-item[hidden] {
+    display: none !important;
+  }
+
+  .card-item.is-hiding {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+    pointer-events: none;
+  }
+
+  @media (max-width: 640px) {
+    .experience-filter__controls {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.75rem;
+    }
+
+    .experience-filter__group {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.5rem;
+    }
+
+    .experience-filter__pills {
+      display: flex;
+      overflow-x: auto;
+      gap: 0.4rem;
+      padding-bottom: 0.25rem;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+    }
+
+    .experience-filter__pills::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .experience-filter__pills::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .experience-filter__pills::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px;
+    }
+
+    .experience-filter__pill {
+      flex: 0 0 auto;
+    }
+
+    .experience-filter__reset {
+      align-self: flex-start;
+    }
+  }
+</style>

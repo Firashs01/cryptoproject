@@ -13,6 +13,16 @@
   --radius-sm: 10px;
   --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
   --max: 1180px;
+
+  /* Experience rating borders */
+  --exp-safe: #22c55e;
+  --exp-safe-hover: #4ade80;
+  --exp-inexperienced: #eab308;
+  --exp-inexperienced-hover: #facc15;
+  --exp-scam: #ef4444;
+  --exp-scam-hover: #f87171;
+  --exp-unknown: #9ca3af;
+  --exp-unknown-hover: #d1d5db;
 }
 
 *,
@@ -341,7 +351,7 @@ main {
   display: flex;
   flex-direction: column;
   background: var(--surface);
-  border: 1px solid var(--border);
+  border: 2px solid var(--exp-unknown);
   border-radius: var(--radius);
   overflow: hidden;
   transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
@@ -351,6 +361,102 @@ main {
   transform: translateY(-4px);
   border-color: rgba(108, 140, 255, 0.55);
   box-shadow: var(--shadow);
+}
+
+/* Experience-coded borders (color applies to the border only) */
+.card--safe {
+  border-color: var(--exp-safe);
+}
+
+.card--inexperienced {
+  border-color: var(--exp-inexperienced);
+}
+
+.card--scam {
+  border-color: var(--exp-scam);
+}
+
+.card--unknown {
+  border-color: var(--exp-unknown);
+}
+
+.card.card--safe:hover {
+  border-color: var(--exp-safe-hover);
+}
+
+.card.card--inexperienced:hover {
+  border-color: var(--exp-inexperienced-hover);
+}
+
+.card.card--scam:hover {
+  border-color: var(--exp-scam-hover);
+}
+
+.card.card--unknown:hover {
+  border-color: var(--exp-unknown-hover);
+}
+
+/* Experience legend */
+.experience-legend {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.35rem;
+  margin: 0 0 1.5rem;
+  padding: 0.8rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.experience-legend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  line-height: 1.3;
+  color: var(--muted);
+}
+
+.experience-legend__swatch {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--exp-unknown);
+  border-radius: 5px;
+  background: var(--surface-2);
+}
+
+.experience-legend__swatch--safe {
+  border-color: var(--exp-safe);
+}
+
+.experience-legend__swatch--inexperienced {
+  border-color: var(--exp-inexperienced);
+}
+
+.experience-legend__swatch--scam {
+  border-color: var(--exp-scam);
+}
+
+.experience-legend__swatch--unknown {
+  border-color: var(--exp-unknown);
+}
+
+.experience-legend__label {
+  color: var(--text);
+  font-weight: 600;
+}
+
+@media (max-width: 480px) {
+  .experience-legend {
+    gap: 0.55rem 1rem;
+    padding: 0.7rem 0.85rem;
+  }
+
+  .experience-legend__item {
+    font-size: 0.8rem;
+  }
 }
 
 .card-media {

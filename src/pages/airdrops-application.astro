@@ -2,6 +2,8 @@
 import Layout from '../layouts/Layout.astro';
 import AirdropCard from '../components/AirdropCard.astro';
 import SearchBar from '../components/SearchBar.astro';
+import ExperienceLegend from '../components/ExperienceLegend.astro';
+import ExperienceFilter from '../components/ExperienceFilter.astro';
 import airdrops from '../data/airdrops.json';
 
 const title = 'Airdrops Application | Apply for Web3 Airdrops';
@@ -35,6 +37,9 @@ const description =
         />
       </div>
 
+      <ExperienceLegend />
+      <ExperienceFilter />
+
       <ul class="card-grid">
         {
           airdrops.map((airdrop) => (
@@ -43,6 +48,7 @@ const description =
               url={airdrop.url}
               description={airdrop.description}
               image={airdrop.image}
+              experience={airdrop.experience}
             />
           ))
         }

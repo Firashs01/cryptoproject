@@ -29,14 +29,13 @@ const {
   const status = document.querySelector<HTMLElement>('[data-search-status]');
   const items = Array.from(document.querySelectorAll<HTMLElement>('[data-searchable]'));
 
-  function applyFilter() {
+  function applySearchFilter() {
     const query = (input?.value || '').trim().toLowerCase();
     let visible = 0;
 
     for (const item of items) {
       const haystack = item.dataset.search || '';
       const match = query === '' || haystack.includes(query);
-      item.hidden = !match;
       if (match) visible += 1;
     }
 
@@ -45,7 +44,26 @@ const {
         ? `${visible} result${visible === 1 ? '' : 's'} for “${query}”`
         : '';
     }
+
+    // Trigger experience filter to re-apply combined logic
+    document.dispatchEvent(new CustomEvent('search-filter-changed'));
   }
 
-  input?.addEventListener('input', applyFilter);
+  input?.addEventListener('input', applySearchFilter);
+
+  // Listen for experience filter changes to update status
+  document.addEventListener('experience-filter-changed', () => {
+    const query = (input?.value || '').trim().toLowerCase();
+    let visible = 0;
+    for (const item of items) {
+      const haystack = item.dataset.search || '';
+      const match = query === '' || haystack.includes(query);
+      if (match && !item.hidden) visible += 1;
+    }
+    if (status) {
+      status.textContent = query
+        ? `${visible} result${visible === 1 ? '' : 's'} for “${query}”`
+        : '';
+    }
+  });
 </script>

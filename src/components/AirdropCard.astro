@@ -1,17 +1,22 @@
 ---
+import { resolveExperienceBorder } from '../lib/experience';
+
 interface Props {
   title: string;
   url: string;
   description: string;
   image: string;
+  experience?: string;
 }
 
-const { title, url, description, image } = Astro.props;
+const { title, url, description, image, experience } = Astro.props;
+const borderClass = resolveExperienceBorder(title, experience);
+const expValue = (experience && ['safe', 'inexperienced', 'scam'].includes(experience)) ? experience : 'unknown';
 const search = `${title} ${description}`.toLowerCase();
 ---
 
-<li class="card-item" data-searchable data-search={search}>
-  <article class="card">
+<li class="card-item" data-searchable data-search={search} data-experience={expValue}>
+  <article class={`card ${borderClass}`}>
     <div class="card-media">
       <img
         src={image}

@@ -1,85 +1,62 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import AirdropCard from '../components/AirdropCard.astro';
+import SearchBar from '../components/SearchBar.astro';
+import ExperienceLegend from '../components/ExperienceLegend.astro';
+import ExperienceFilter from '../components/ExperienceFilter.astro';
+import airdropSite from '../data/airdropsite.json';
 
-const title = 'Airdrops | Coming Soon | CryptoWords*';
+const title = 'Airdrops | Curated Web3 Airdrops | CryptoWords*';
 const description =
-  'Our Web3 airdrops page is on the way. Check back soon for curated token drops, testnet campaigns and community rewards.';
+  'Browse curated Web3 airdrop opportunities. Search and filter each project by experience level before you join.';
+
+const airdrops = [...airdropSite].sort(
+  (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+);
 ---
 
 <Layout title={title} description={description}>
   <section class="hero">
     <div class="container">
       <span class="hero-kicker">Airdrops</span>
-      <h1>Airdrops <em>Coming Soon</em></h1>
+      <h1>Web3 <em>Airdrops</em></h1>
       <p>
-        We are curating the best Web3 airdrop opportunities for you. This page is under
-        construction — stay tuned for the launch.
+        Curated token drops, testnet campaigns and community rewards. Search by name or
+        description and filter by experience level to find the right opportunity.
       </p>
-      <a class="btn btn-primary" href="/airdrops-application">View airdrop applications</a>
+      <a class="btn btn-primary" href="#airdrop-list">Explore airdrops</a>
     </div>
   </section>
 
-  <section class="section" aria-labelledby="coming-soon-heading">
+  <section class="section" id="airdrop-list" aria-labelledby="airdrops-heading">
     <div class="container">
-      <div class="coming-soon">
-        <span class="coming-soon-badge">Coming Soon</span>
-        <h2 id="coming-soon-heading">Something big is landing here</h2>
-        <p>
-          Active and upcoming airdrops, testnet campaigns and community rewards will be listed
-          on this page very soon.
-        </p>
-        <a class="btn btn-primary" href="/contact">Get notified</a>
+      <div class="section-head">
+        <div>
+          <h2 id="airdrops-heading">Airdrops</h2>
+          <p>{airdrops.length} airdrop{airdrops.length === 1 ? '' : 's'} currently listed.</p>
+        </div>
+        <SearchBar
+          label="Search airdrops"
+          placeholder="Search airdrops by name or description…"
+        />
       </div>
+
+      <ExperienceLegend />
+      <ExperienceFilter />
+
+      <ul class="card-grid">
+        {
+          airdrops.map((airdrop) => (
+            <AirdropCard
+              title={airdrop.title}
+              url={airdrop.url}
+              description={airdrop.description}
+              image={airdrop.image}
+              experience={airdrop.experience}
+            />
+          ))
+        }
+      </ul>
     </div>
   </section>
 </Layout>
-
-<style>
-  .coming-soon {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 1rem;
-    padding: 4rem 1.5rem;
-    border: 1px dashed var(--border);
-    border-radius: var(--radius);
-    background: rgba(255, 255, 255, 0.03);
-  }
-
-  .coming-soon h2 {
-    margin: 0;
-    font-size: clamp(1.5rem, 3vw, 2.25rem);
-  }
-
-  .coming-soon p {
-    max-width: 40rem;
-    margin: 0;
-    color: var(--muted);
-  }
-
-  .coming-soon-badge {
-    display: inline-block;
-    padding: 0.4rem 1rem;
-    border-radius: 999px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: #05060a;
-    background: var(--accent);
-    animation: pulse 2s ease-in-out infinite;
-  }
-
-  @keyframes pulse {
-    0%,
-    100% {
-      opacity: 1;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 0.7;
-      transform: scale(1.04);
-    }
-  }
-</style>
