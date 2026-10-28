@@ -1,0 +1,64 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SiteCard from '../components/SiteCard.astro';
+import SearchBar from '../components/SearchBar.astro';
+import ExperienceLegend from '../components/ExperienceLegend.astro';
+import ExperienceFilter from '../components/ExperienceFilter.astro';
+import siteData from '../data/sitedata.json';
+
+const title = 'Sites Directory | Curated Profit & Earning Sites | CryptoWords*';
+const description =
+  'Browse curated profit and crypto earning sites from sitedata.json. Search by name or description and filter by experience level before visiting.';
+
+const sites = [...siteData].sort((a, b) => {
+  const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+  const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+  return dateB - dateA;
+});
+---
+
+<Layout title={title} description={description}>
+  <section class="hero">
+    <div class="container">
+      <span class="hero-kicker">Profit & Earning Sites</span>
+      <h1>Explore <em>Profit Sites</em></h1>
+      <p>
+        A curated list of profit, offerwall, and crypto-earning websites. Search by name or
+        description and filter by experience level to find trusted opportunities.
+      </p>
+      <a class="btn btn-primary" href="#sites-list">Explore sites</a>
+    </div>
+  </section>
+
+  <section class="section" id="sites-list" aria-labelledby="sites-heading">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2 id="sites-heading">Sites Listings</h2>
+          <p>{sites.length} site{sites.length === 1 ? '' : 's'} currently listed.</p>
+        </div>
+        <SearchBar
+          label="Search sites"
+          placeholder="Search sites by name or description…"
+        />
+      </div>
+
+      <ExperienceLegend />
+      <ExperienceFilter />
+
+      <ul class="card-grid">
+        {
+          sites.map((site) => (
+            <SiteCard
+              title={site.title}
+              url={site.url}
+              description={site.description}
+              image={site.image}
+              experience={site.experience}
+            />
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</Layout>
